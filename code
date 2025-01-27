@@ -1,0 +1,274 @@
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Copy, RefreshCcw } from "lucide-react";
+
+// Sample array of jokes (placeholder). In production, you might fetch from an API.
+const sampleJokes = [
+  "Warum hat der Programmierer seinen Job gekündigt? Er hatte zu viele Bugs, die er nicht squashen konnte.",
+  "Warum verwenden IT-Profis so oft dunkle Themes? Weil das Debuggen im Dunkeln mehr Spaß macht!",
+  "Warum sind IT-Witze so selten lustig? Weil nur 1% die Pointe versteht.",
+  "Wieviele Softwareentwickler braucht man um eine Glühbirne zu wechseln? Keinen, das ist ein Hardwareproblem.",
+  "Ein IT-Admin betritt eine Bar – und blockt direkt jeden unerwünschten Traffic.",  
+  "Ein SQL-Statement läuft in eine Bar, geht auf zwei Tabellen zu und sagt: Kann ich mich zu euch setzen?",
+  "Warum lieben Programmierer den Herbst? Weil die Blätter endlich fallen (leaf).",
+  "Mein Computer ist so langsam, er könnte einen Snail-Mail-Server betreiben.",
+  "Was sagt der IT-Support, wenn man ihm ein Kompliment macht? Haben Sie es aus- und wieder eingeschaltet?",
+  "Warum sind Netzwerkadmins die schlechtesten Musiker? Weil sie Probleme mit dem Bandwidth haben.",
+  "Was macht ein Pirat am Computer? Er drückt die Enter-Taste.",
+  "Ein Kunde kommt zum IT-Support: „Ich kann keine E-Mail mehr schreiben.“ - „Cache?“ - „Nein, ich bin noch nicht mal zur Hälfte durch!“",
+  "Was macht ein ITler, wenn er Angst hat? Er macht ein Backup.",
+  "Warum gehen Systemadministratoren nicht gerne angeln? Sie können keine Netzwerkprobleme lösen.",
+  "Wie viele IT-Techniker braucht man, um eine Glühbirne zu wechseln? Zwei. Einer schraubt die Glühbirne ein, der andere aktualisiert die Firmware. ",
+  "Was ist der Unterschied zwischen einem Cybersecurity-Spezialisten und einem Dieb? Der Spezialist versteht es, Ihre Daten zu „schützen“",
+  "Was haben https und ein Einbrecher gemeinsam? Beide möchten eine sichere Verbindung.",
+  "Wie begrüßen sich zwei ITler? „Hast du schon neu gestartet?“",
+  "Was macht eine CPU beim Arzt? Einen Cache-Test. ",
+  "Wie macht ein Computer einen Cocktail? Er mischt alle Bytes. ",
+  "Was macht ein ITler am Strand? Er installiert Windows.",
+  "Wie flirtet ein ITler? „Ich mag deine Routinen!“ ",
+  "Warum hat das Internet nie Schlafprobleme? Es surft zu viel im Netz ",
+  "Warum ist der Computer kalt? Er hat zu viele Fenster offen. ",
+  "Warum haben IT-Support-Mitarbeiter immer Recht? Weil Fehler nie bei ihnen liegen ",
+  "Was macht Microsoft 365 auf einer Party? Es bringt alle in die Cloud! ",
+  "Warum mag Microsoft 365 keine Geheimnisse? Weil es alles in der Cloud speichert! ",
+  "Warum scherzt Microsoft 365 nie über den 29. Februar? Es kann nicht sicher sein, ob es sich um einen wiederkehrenden Termin handelt! ",
+  "Warum hat Microsoft 365 immer Recht? Es hat immer die letzte Version der Wahrheit! ",
+  "Warum ging Microsoft 365 zur Therapie? Es hatte zu viele ungelöste Konflikte beim Synchronisieren! ",
+  "Warum sind PC-Techniker schlechte Chirurgen? Jedes Mal, wenn sie etwas öffnen, bleiben immer ein paar Schrauben übrig. ",
+  "Wie tröstet man einen traurigen Computer? Man drückt die Reset-Taste. ",
+  "Warum sind Hardware-Techniker keine guten Diebe? Sie hinterlassen immer Fingerabdrücke auf der CPU. ",
+  "Warum ging der IT-Support-Mitarbeiter zur Therapie? Er konnte die „User-Fehler“ nicht mehr ignorieren. ",
+  "Warum bringt der IT-Support-Mitarbeiter ständig seine Arbeit mit nach Hause? Weil die Probleme ihm folgen, auch wenn er den Router aussteckt. ",
+  "Wie viele IT-Support-Mitarbeiter braucht man, um eine Festplatte zu ersetzen? Einen, aber zehn weitere, die fragen, ob die Festplatte wirklich kaputt ist. "
+  
+
+
+
+];
+
+export default function ITJokesLandingpage() {
+  const [currentJoke, setCurrentJoke] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const getNewJoke = () => {
+    setLoading(true);
+    // Simulate network delay
+    setTimeout(() => {
+      const randomJoke = sampleJokes[Math.floor(Math.random() * sampleJokes.length)];
+      setCurrentJoke(randomJoke);
+      setLoading(false);
+    }, 1000);
+  };
+
+  // Fallback-based copy function:
+  const copyJokeToClipboard = async () => {
+    if (!currentJoke) return;
+
+    // Use modern API if available and the context is secure
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(currentJoke);
+        alert("Witz wurde in die Zwischenablage kopiert!");
+      } catch (err) {
+        fallbackCopy(currentJoke);
+      }
+    } else {
+      // Fallback for older browsers or insecure contexts
+      fallbackCopy(currentJoke);
+    }
+  };
+
+  const fallbackCopy = (textToCopy) => {
+    // Create hidden text element, select it, copy
+    const textArea = document.createElement("textarea");
+    textArea.value = textToCopy;
+    // Move outside the visible area
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand("copy");
+      alert("Witz wurde in die Zwischenablage kopiert!");
+    } catch (e) {
+      alert("Fehler beim Kopieren!");
+    } finally {
+      document.body.removeChild(textArea);
+    }
+  };
+
+  return (
+    <div className="font-sans text-gray-800 w-full min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="bg-white text-gray-900 border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div>
+              <h1 className="text-3xl font-extrabold tracking-wide">Gigabyte of Laughs</h1>
+              <p className="text-sm text-gray-500">IT-Witzportal powerd By ziegelmayer.net </p>
+            </div>
+          </div>
+          {/* Navigation */}
+          <nav>
+            <ul className="flex items-center space-x-8 font-medium text-lg">
+              <li>
+                <a href="#hero" className="hover:text-blue-600 transition-colors">Home</a>
+              </li>
+              <li>
+                <a href="#about" className="hover:text-blue-600 transition-colors">Über uns</a>
+              </li>
+              <li>
+                <a href="#how-it-works" className="hover:text-blue-600 transition-colors">Wie es funktioniert</a>
+              </li>
+              <li>
+                <a href="#footer" className="hover:text-blue-600 transition-colors">Kontakt</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section
+        id="hero"
+        className="flex flex-col items-center justify-center bg-gradient-to-r from-blue-100 to-purple-100 py-20 text-center px-4"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-3xl mx-auto"
+        >
+          <h2 className="text-5xl font-extrabold mb-4 text-gray-900">
+            Gigabytes of Laughter
+          </h2>
+          <p className="text-xl mb-10 text-gray-600">
+            Für IT-Fachinformatiker, Systemadministratoren und Support-Heldinnen & Helden – wir bringen
+            eure Server zum Lachen!
+          </p>
+          <Button
+            onClick={() => {
+              document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="px-8 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 shadow-lg transition-transform hover:-translate-y-1"
+          >
+            Mehr erfahren
+          </Button>
+        </motion.div>
+      </section>
+
+      {/* How it Works Section */}
+      <section id="how-it-works" className="py-20 px-4 bg-gradient-to-r from-gray-50 to-gray-100">
+        <div className="max-w-5xl mx-auto">
+          <h3 className="text-4xl font-semibold mb-6 text-gray-900 text-center">So funktioniert es</h3>
+          <p className="text-center text-gray-600 mb-12">
+            In drei einfachen Schritten zu eurem IT-Witz.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
+            {[1, 2, 3].map((step) => (
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: step * 0.2 }}
+                viewport={{ once: true }}
+                className="flex flex-col items-center text-center p-6 shadow-lg rounded-xl hover:shadow-2xl transition bg-white"
+              >
+                <p className="font-semibold text-2xl mb-2 text-gray-900">Schritt {step}</p>
+                {step === 1 && (
+                  <p className="text-gray-600">Seite aufrufen und den IT-Witzgenerator öffnen.</p>
+                )}
+                {step === 2 && (
+                  <p className="text-gray-600">Auf "Neuer Witz" klicken und die Ladeanimation genießen.</p>
+                )}
+                {step === 3 && (
+                  <p className="text-gray-600">Witz lesen, kopieren und mit Kollegen teilen.</p>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Jokes Generator Section */}
+      <section id="joke-generator" className="py-20 px-4 bg-white flex flex-col items-center">
+        <h3 className="text-4xl font-semibold mb-10 text-gray-900">IT-Jokes-Generator</h3>
+        <Card className="max-w-lg w-full rounded-2xl shadow-xl">
+          <CardContent className="p-6 flex flex-col items-center">
+            <div className="w-full mb-4">
+              {loading ? (
+                <div className="flex justify-center items-center animate-pulse text-lg">Lade Witz...</div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-gray-100 p-4 rounded-2xl min-h-[100px] flex items-center justify-center text-center"
+                >
+                  {currentJoke || "Klicken Sie unten, um einen IT-Witz zu generieren."}
+                </motion.div>
+              )}
+            </div>
+            <div className="flex space-x-2">
+              <Button
+                onClick={getNewJoke}
+                className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 inline-flex items-center space-x-2 rounded-xl"
+              >
+                <RefreshCcw size={16} />
+                <span>Neuer Witz</span>
+              </Button>
+              <Button
+                onClick={copyJokeToClipboard}
+                className="px-4 py-2 bg-gray-200 text-gray-800 hover:bg-gray-300 inline-flex items-center space-x-2 rounded-xl"
+              >
+                <Copy size={16} />
+                <span>Kopieren</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* About Us Section */}
+      <section id="about" className="py-20 px-4 bg-gray-50">
+        <div className="max-w-5xl mx-auto">
+          <h3 className="text-4xl font-semibold mb-6 text-gray-900">Über uns</h3>
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            Wir von <a href="http://ziegelmayer.net/" className="text-blue-600 underline">ziegelmayer.net</a> wissen,
+            dass IT nicht nur aus Code und Problemen besteht. Speziell für IT-Fachinformatiker, Systemadministratoren
+            und Support-Mitarbeiter haben wir diesen Witzgenerator entwickelt, damit ihr in stressigen Momenten
+            ordentlich was zu lachen habt.
+          </p>
+          <p className="mb-4 text-lg leading-relaxed text-gray-700">
+            Egal ob ihr gerade an einem komplexen Skript tüftelt, einen hartnäckigen Serverfehler behebt oder die Hotline
+            glüht – ein kurzer Spaß zwischendurch lockert garantiert die Stimmung. Probiert es einfach aus und verbreitet
+            unser IT-Lachen überall!
+          </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer id="footer" className="mt-auto bg-gray-900 text-white py-8 px-4">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center">
+          <p className="mb-2 sm:mb-0 text-center sm:text-left">
+            © {new Date().getFullYear()} – erstellt von Ohad Ragolsky von
+            <a href="http://ziegelmayer.net/" className="underline ml-1">ziegelmayer.net</a>
+          </p>
+          <div className="flex space-x-6">
+            <a href="#" className="text-gray-300 hover:text-white">Facebook</a>
+            <a href="#" className="text-gray-300 hover:text-white">Twitter</a>
+            <a href="#" className="text-gray-300 hover:text-white">LinkedIn</a>
+          </div>
+        </div>
+        <div className="text-center mt-4">
+          <span className="inline-block bg-green-600 text-white px-3 py-1 rounded-full text-sm shadow-md">
+            IT-geprüft
+          </span>
+        </div>
+      </footer>
+    </div>
+  );
+}
